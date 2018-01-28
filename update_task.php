@@ -1,57 +1,53 @@
 <?php
+
+ include ("task.class.php");
 /**
  * This script is to be used to receive a POST with the object information and then either updates, creates or deletes the task object
+ 
+ // Assignment: Implement this script
  */
-require('Task.class.php');
-// Assignment: Implement this script
-if( $_GET["TaskName"] || $_GET["TaskId"] || $_GET["TaskDescription"] || $_GET["actionStatus"])
+$task=new Task();
+if( $_REQUEST["TaskName"] || $_REQUEST["TaskId"] || $_REQUEST["TaskDescription"] || $_REQUEST["actionStatus"])
 {
-	debug_to_console( "test" );
-	if($_GET["actionStatus"]=="SaveOrUpdate")
+	$TaskDataSource = file_get_contents('Task_Data.txt');
+	$taskArray = json_decode($TaskDataSource);
+	if($_REQUEST["actionStatus"]=="SaveOrUpdate")
 	{
-		$taskData = file_get_contents('Task_Data.txt');
-		$taskArray = json_decode($taskData);
+		
 		$isSet = false;
-		$tempTask = null;
 		foreach ($taskArray as $task) {
-			if($task.TaskId == $_GET["TaskId"])
-			{
-				if($task.TaskDescription != $_GET["TaskDescription"])
+				if($task->TaskId == $_REQUEST["TaskId"])//update
+					{$isSet = true;//If the task exists
+						if($task->TaskDescription != $_REQUEST["TaskDescription"])
+						{
+							$task->TaskDescription = $_REQUEST["TaskDescription"];
+						}if($task->TaskName != $_REQUEST["TaskName"])
+						{
+							$task->TaskName = $_REQUEST["TaskName"];
+						}
+					}
+			}if ($isSet==false)
+			{ 
+				 
+				 $input->TaskId=gmdate('Y-m-d h:i:s \G\M\T');//add;
+				 $input->TaskName=$_REQUEST["TaskName"];
+				 $input->TaskDescription=$_REQUEST["TaskDescription"];
+				 array_push($taskArray,$input);
+			}
+			
+	}
+	else if($_REQUEST["actionStatus"]=="DeleteRecord")//Delete
+		{$x=0;
+			foreach ($taskArray as $task) {
+				if($task->TaskId == $_REQUEST["TaskId"])
 				{
-					$task.TaskDescription = $_GET["TaskDescription"];
-					$isSet = true;
-				}
-					
-				if($task.TaskName != $_GET["TaskName"])
-				{
-					$task.TaskName = $_GET["TaskName"];
-					$isSet = true;
-				}
-			}	
+					array_splice($taskArray, $x, 1);//Remove from array
+				}	$x=$x+1;
+			}
+			$taskArray = array_values($taskArray);
 		}
 		
-		if($isSet == false)
-		{
-			$newTask = new Task();
-		}
-		
-	}
-	else if($_GET["actionStatus"]=="DeleteRecord")
-	{
-		foreach ($taskArray as $task) {
-			if($task.TaskId == $_GET["TaskId"])
-			{
-				//$tempTask = 
-			}	
-		}
-	}
+		$json = json_encode($taskArray);//Save
+		file_put_contents('Task_Data.txt', $json);
 }
-function debug_to_console( $data ) {
-    $output = $data;
-    if ( is_array( $output ) )
-        $output = implode( ',', $output);
-
-    echo "<script>console.log( 'Debug Objects: " . $output . "' );</script>";
-}
-
 ?>

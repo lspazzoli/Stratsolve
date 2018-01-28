@@ -86,56 +86,54 @@
             $('#deleteTask').hide();
             currentTaskId = -1;
 			modal.find('#InputTaskName').val('');
-			modal.find('#InputTaskDescription').text('');
+			modal.find('#InputTaskDescription').val('');
         } else {
             modal.find('.modal-title').text('Task details');
             $('#deleteTask').show();
             currentTaskId = triggerElement.attr("id");
             console.log('Task ID: '+triggerElement.attr("id"));
-			debugger;
 			prevSelectedTaskId = triggerElement.attr("id");
 			prevSelectedTaskName = triggerElement.find('.list-group-item-heading')[0].innerText;
 			prevSelectedTaskDescription = triggerElement.find('.list-group-item-text')[0].innerText;
 			modal.find('#InputTaskName').val(prevSelectedTaskName);
-			modal.find('#InputTaskDescription').text(prevSelectedTaskDescription);
+			modal.find('#InputTaskDescription').val(prevSelectedTaskDescription);
         }
     });
+	
+	
+	
+	
+	
+	
     $('#saveTask').click(function(event) {
         //Assignment: Implement this functionality
 		 var textDetail = $('#InputTaskDescription').val();
 		 var name = $('#InputTaskName').val();
-		alert("\TaskId: " + currentTaskId
-			+ "\TaskName: " + name+ "\TaskDescription: " +  textDetail);
+		//alert("\TaskId: " + currentTaskId+ "\nTaskName: " + name+ "\nTaskDescription: " +  textDetail);
 		//check if record exists, if not json add to array of tasks
-		debugger;
-		
-		$.post("update_task.php",
-		{
-			TaskId:currentTaskId,
-			TaskName: prevSelectedTaskName,
-			TaskDescription: textDetail,
-			actionStatus:"SaveOrUpdate"
-		});
-        $('#myModal').modal('hide');
-        updateTaskList();
+		$.post("update_task.php",{TaskId: currentTaskId,TaskName: name,TaskDescription: textDetail,actionStatus: "SaveOrUpdate"})
+			.done(function(msg){ 
+			//alert(msg+" Message"); 
+			$('#myModal').modal('hide');
+			updateTaskList(); })
+		.fail(function(xhr, status, error) {alert(error+" Error");});		
+       
     });
+	
+	
     $('#deleteTask').click(function() {
         //Assignment: Implement this functionality
-        alert('Delete... Id:'+currentTaskId);
-		var textDetail = $('#InputTaskDescription').val();
+        //alert('Delete... Id:'+currentTaskId);
+		 var textDetail = $('#InputTaskDescription').val();
+		 var name = $('#InputTaskName').val();
 		$.post("update_task.php",
-		{
-			TaskId:currentTaskId,
-			TaskName: prevSelectedTaskName,
-			TaskDescription: textDetail,
-			actionStatus:"DeleteRecord"
-		},
-		function(data, status){
-			alert("Data: " + data + "\nStatus: " + status);
-		});
-        $('#myModal').modal('hide');
-        updateTaskList();
+		{TaskId:currentTaskId,TaskName: name,TaskDescription: textDetail,actionStatus:"DeleteRecord"}).done(function(msg){ 
+			//alert(msg+" Message"); 
+			$('#myModal').modal('hide');
+			updateTaskList(); })
+		.fail(function(xhr, status, error) {alert(error+" Error");});	
     });
+	
     function updateTaskList() {
         $.post("list_tasks.php", function( data ) {
             $( "#TaskList" ).html( data );

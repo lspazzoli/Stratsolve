@@ -27,10 +27,5 @@ if (sizeof($taskArray) > 0) {
                 </a>';
     }
 }
-if( $_GET["TaskName"] || $_GET["TaskId"] || $_GET["TaskDescription"] || $_GET["actionStatus"])
-{ $html .= '<a id="'.$task->TaskId.'" href="#" class="list-group-item" data-toggle="modal" data-target="#myModal">
-                    <h4 class="list-group-item-heading">'.$task->TaskName.'</h4>
-                    <p class="list-group-item-text">'.$task->TaskDescription.'</p>
-                </a>';}
 die($html);
 ?>

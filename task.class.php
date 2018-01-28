@@ -29,18 +29,21 @@ class Task {
     protected function getUniqueId() {
         return gmdate('Y-m-d h:i:s \G\M\T'); // VeryUniqueID
     }
-    protected function LoadFromId($Id = null) {
+    protected function LoadFromId($Id = null) {//Dont know what this is needed for ?
         if ($Id) {
             // Assignment: Code to load details here...
         } else
             return null;
     }
 
-    public function Save() {
+    public function Save($taskArray) {//save done in update.php
         //Assignment: Code to save task here
+		$json = json_encode($taskArray);
+		file_put_contents('Task_Data.txt', $json);
     }
-    public function Delete() {
+    public function Delete() {//delete done in update.php
         //Assignment: Code to delete task here
+		echo "Del Request";
     }
 }
 ?>
