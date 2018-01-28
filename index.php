@@ -78,13 +78,15 @@
 	var prevSelectedTaskDescription = "";
 	
 	
-    $('#myModal').on('show.bs.modal', function (event) {
+     $('#myModal').on('show.bs.modal', function (event) {
         var triggerElement = $(event.relatedTarget); // Element that triggered the modal
         var modal = $(this);
         if (triggerElement.attr("id") == 'newTask') {
             modal.find('.modal-title').text('New Task');
             $('#deleteTask').hide();
             currentTaskId = -1;
+			modal.find('#InputTaskName').val('');
+			modal.find('#InputTaskDescription').text('');
         } else {
             modal.find('.modal-title').text('Task details');
             $('#deleteTask').show();
@@ -94,23 +96,25 @@
 			prevSelectedTaskId = triggerElement.attr("id");
 			prevSelectedTaskName = triggerElement.find('.list-group-item-heading')[0].innerText;
 			prevSelectedTaskDescription = triggerElement.find('.list-group-item-text')[0].innerText;
+			modal.find('#InputTaskName').val(prevSelectedTaskName);
+			modal.find('#InputTaskDescription').text(prevSelectedTaskDescription);
         }
     });
-    $('#saveTask').click(function() {
+    $('#saveTask').click(function(event) {
         //Assignment: Implement this functionality
-        alert('Save... Id:'+currentTaskId);
+		 var textDetail = $('#InputTaskDescription').val();
+		 var name = $('#InputTaskName').val();
+		alert("\TaskId: " + currentTaskId
+			+ "\TaskName: " + name+ "\TaskDescription: " +  textDetail);
 		//check if record exists, if not json add to array of tasks
 		debugger;
-		var textDetail = $('#InputTaskDescription').val();
+		
 		$.post("update_task.php",
 		{
 			TaskId:currentTaskId,
 			TaskName: prevSelectedTaskName,
 			TaskDescription: textDetail,
 			actionStatus:"SaveOrUpdate"
-		},
-		function(data, status){
-			alert("Data: " + data + "\nStatus: " + status);
 		});
         $('#myModal').modal('hide');
         updateTaskList();

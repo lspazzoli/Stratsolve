@@ -27,7 +27,7 @@ class Task {
         $this->TaskDescription = 'New Description';
     }
     protected function getUniqueId() {
-        return gmdate('Y-m-d h:i:s \G\M\T'); // Placeholder return for now
+        return gmdate('Y-m-d h:i:s \G\M\T'); // VeryUniqueID
     }
     protected function LoadFromId($Id = null) {
         if ($Id) {
