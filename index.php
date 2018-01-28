@@ -72,6 +72,12 @@
 <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     var currentTaskId = -1;
+	
+	var prevSelectedTaskId = 0;
+	var prevSelectedTaskName = "";
+	var prevSelectedTaskDescription = "";
+	
+	
     $('#myModal').on('show.bs.modal', function (event) {
         var triggerElement = $(event.relatedTarget); // Element that triggered the modal
         var modal = $(this);
@@ -84,17 +90,45 @@
             $('#deleteTask').show();
             currentTaskId = triggerElement.attr("id");
             console.log('Task ID: '+triggerElement.attr("id"));
+			debugger;
+			prevSelectedTaskId = triggerElement.attr("id");
+			prevSelectedTaskName = triggerElement.find('.list-group-item-heading')[0].innerText;
+			prevSelectedTaskDescription = triggerElement.find('.list-group-item-text')[0].innerText;
         }
     });
     $('#saveTask').click(function() {
         //Assignment: Implement this functionality
         alert('Save... Id:'+currentTaskId);
+		//check if record exists, if not json add to array of tasks
+		debugger;
+		var textDetail = $('#InputTaskDescription').val();
+		$.post("update_task.php",
+		{
+			TaskId:currentTaskId,
+			TaskName: prevSelectedTaskName,
+			TaskDescription: textDetail,
+			actionStatus:"SaveOrUpdate"
+		},
+		function(data, status){
+			alert("Data: " + data + "\nStatus: " + status);
+		});
         $('#myModal').modal('hide');
         updateTaskList();
     });
     $('#deleteTask').click(function() {
         //Assignment: Implement this functionality
         alert('Delete... Id:'+currentTaskId);
+		var textDetail = $('#InputTaskDescription').val();
+		$.post("update_task.php",
+		{
+			TaskId:currentTaskId,
+			TaskName: prevSelectedTaskName,
+			TaskDescription: textDetail,
+			actionStatus:"DeleteRecord"
+		},
+		function(data, status){
+			alert("Data: " + data + "\nStatus: " + status);
+		});
         $('#myModal').modal('hide');
         updateTaskList();
     });
